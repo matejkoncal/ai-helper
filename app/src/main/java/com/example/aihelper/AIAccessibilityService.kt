@@ -18,9 +18,11 @@ class AIAccessibilityService : AccessibilityService() {
                 override fun onClicked(controller: AccessibilityButtonController) {
                     GlobalScope.launch {
                         node?.also {
+                            it.refresh()
                             val promptDialog = PromptDialog(baseContext)
                             val prompt = promptDialog.askForPrompt()
-                            updateTextNode(it, prompt)
+                            val adjustedText = AIService().adjustText(it.text.toString(), prompt)
+                            updateTextNode(it, adjustedText)
                         }
                     }
                 }

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "517449589730",
+    "project_id": "ai-helper-7d082",
+    "storage_bucket": "ai-helper-7d082.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:517449589730:android:14130f0aac1bb916098fbb",
+        "android_client_info": {
+          "package_name": "com.example.aihelper"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDiLz9mw_Cuw3FF58aMAcxZ1FlVNto2BTQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
