@@ -1,0 +1,4 @@
+<accessibility-service android:accessibilityEventTypes="typeViewFocused"
+    android:canRetrieveWindowContent="true"
+    android:accessibilityFlags="flagRequestAccessibilityButton"
+    xmlns:android="http://schemas.android.com/apk/res/android" />
