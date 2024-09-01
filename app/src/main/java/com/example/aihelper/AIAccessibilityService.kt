@@ -4,6 +4,7 @@ import android.accessibilityservice.AccessibilityButtonController
 import android.accessibilityservice.AccessibilityService
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
+import android.widget.Toast
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -13,18 +14,28 @@ class AIAccessibilityService : AccessibilityService() {
     override fun onServiceConnected() {
         requestOverlayPermission(this)
 
+        var ctx = this;
         val accessibilityButtonCallback =
             object : AccessibilityButtonController.AccessibilityButtonCallback() {
                 override fun onClicked(controller: AccessibilityButtonController) {
-                    GlobalScope.launch {
-                        node?.also {
-                            it.refresh()
-                            val promptDialog = PromptDialog(baseContext)
-                            val prompt = promptDialog.askForPrompt()
-                            val adjustedText = AIService().adjustText(it.text.toString(), prompt)
-                            updateTextNode(it, adjustedText)
+                    val focusedNode = findFocusedChildNode(rootInActiveWindow)
+                    if (focusedNode?.isEditable == true && focusedNode?.packageName != "com.example.aihelper")
+                        GlobalScope.launch {
+                            focusedNode?.also {
+                                it.refresh()
+
+                                val promptDialog = PromptDialog(baseContext)
+                                val prompt = promptDialog.askForPrompt()
+
+                                if (prompt.isNotBlank()) {
+                                    val adjustedText =
+                                        AIService().adjustText(it.text.toString(), prompt)
+                                    updateTextNode(it, adjustedText)
+                                }
+                            }
                         }
-                    }
+                    else
+                        Toast.makeText(ctx, "Click to editable input", Toast.LENGTH_LONG).show()
                 }
             }
 
@@ -33,12 +44,9 @@ class AIAccessibilityService : AccessibilityService() {
         )
     }
 
-    override fun onInterrupt() {
+    override fun onAccessibilityEvent(event: AccessibilityEvent?) {
     }
 
-    override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-        if (rootInActiveWindow.packageName != "com.example.aihelper") {
-            node = findFocusedChildNode(rootInActiveWindow)
-        }
+    override fun onInterrupt() {
     }
 }

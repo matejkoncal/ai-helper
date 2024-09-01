@@ -8,7 +8,7 @@ import android.provider.Settings
 import android.view.accessibility.AccessibilityNodeInfo
 
 fun updateTextNode(node: AccessibilityNodeInfo, newText: String) {
-    if(!node.isEditable){
+    if (!node.isEditable) {
         throw Error("Node is not editable.")
     }
 
@@ -18,7 +18,8 @@ fun updateTextNode(node: AccessibilityNodeInfo, newText: String) {
             newText
         )
     }
-    node.performAction(AccessibilityNodeInfo.ACTION_FOCUS)
+
+    node.performAction(AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS)
     node.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, bundle)
 }
 

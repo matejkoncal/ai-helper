@@ -15,16 +15,24 @@ class PromptDialog(private val context: Context) {
         return withContext(Dispatchers.Main) {
             suspendCancellableCoroutine { continuation ->
                 val input = EditText(context)
+                var shouldContinue = false
 
                 val dialog = AlertDialog.Builder(context)
                     .setTitle("AI")
                     .setMessage("Write a prompt for modifying your text:")
                     .setView(input)
                     .setOnDismissListener {
-                        val userInput = input.text.toString()
-                        continuation.resume(userInput)
+                        if (shouldContinue) {
+                            val userInput = input.text.toString()
+                            continuation.resume(userInput)
+                        } else {
+                            continuation.resume("");
+                        }
                     }
-                    .setNegativeButton("OK") { dialog, _ ->
+                    .setNegativeButton("Close") { dialog, _ ->
+                        dialog.cancel()
+                    }.setPositiveButton("OK") { dialog, _ ->
+                        shouldContinue = true
                         dialog.cancel()
                     }
                     .create()
