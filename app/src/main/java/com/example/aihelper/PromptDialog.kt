@@ -3,7 +3,6 @@ package com.example.aihelper
 import android.app.AlertDialog
 import android.content.Context
 import android.view.WindowManager
-import android.widget.EditText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -14,28 +13,24 @@ class PromptDialog(private val context: Context) {
     suspend fun askForPrompt(): String {
         return withContext(Dispatchers.Main) {
             suspendCancellableCoroutine { continuation ->
-                val input = EditText(context)
                 var shouldContinue = false
+                val items = loadPrompts(context)
+                var index = 0
+                val strings = items.map { it.label }.toTypedArray();
 
-                val dialog = AlertDialog.Builder(context)
-                    .setTitle("AI")
-                    .setMessage("Write a prompt for modifying your text:")
-                    .setView(input)
-                    .setOnDismissListener {
+                val dialog = AlertDialog.Builder(context).setItems(strings) { dialog, i ->
+                        index = i
+                        shouldContinue = true
+                        dialog.cancel()
+                    }.setOnDismissListener {
                         if (shouldContinue) {
-                            val userInput = input.text.toString()
-                            continuation.resume(userInput)
+                            continuation.resume(items[index].prompt)
                         } else {
                             continuation.resume("");
                         }
-                    }
-                    .setNegativeButton("Close") { dialog, _ ->
+                    }.setNegativeButton("Close") { dialog, _ ->
                         dialog.cancel()
-                    }.setPositiveButton("OK") { dialog, _ ->
-                        shouldContinue = true
-                        dialog.cancel()
-                    }
-                    .create()
+                    }.create()
 
                 dialog.window?.setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY)
 

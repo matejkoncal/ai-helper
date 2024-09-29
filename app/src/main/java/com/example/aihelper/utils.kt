@@ -6,6 +6,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.accessibility.AccessibilityNodeInfo
+import kotlinx.serialization.json.Json
+import java.io.File
 
 fun updateTextNode(node: AccessibilityNodeInfo, newText: String) {
     if (!node.isEditable) {
@@ -14,8 +16,7 @@ fun updateTextNode(node: AccessibilityNodeInfo, newText: String) {
 
     val bundle = Bundle().apply {
         putCharSequence(
-            AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE,
-            newText
+            AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, newText
         )
     }
 
@@ -56,4 +57,11 @@ fun findFocusedChildNode(node: AccessibilityNodeInfo): AccessibilityNodeInfo? {
     }
 
     return null
+}
+
+fun loadPrompts(context: Context): List<ListItemSource> {
+    val file = File(context.filesDir, "prompts.json")
+    return if (file.exists()) {
+        Json.decodeFromString<List<ListItemSource>>(file.readText())
+    } else return listOf()
 }

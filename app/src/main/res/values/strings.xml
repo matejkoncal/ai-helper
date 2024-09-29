@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">AI helper</string>
     <string name="accessibility_service_label">AI service</string>
+    <string name="title_activity_main">AI</string>
 </resources>
